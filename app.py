@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 from utils.file_handler import save_file, allowed_file
 from utils.nlp_processor import analyze_resume
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 
 # Configuration
 UPLOAD_FOLDER = 'static/uploads'
@@ -45,6 +45,10 @@ def analyze():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
